@@ -1,8 +1,12 @@
 package pl.mikolajp.client.rest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.mikolajp.core.exception.ImproperDiceNameException;
 import pl.mikolajp.core.exception.ValidationException;
 import pl.mikolajp.core.model.Dice;
 import pl.mikolajp.core.model.DiceImp;
@@ -10,19 +14,25 @@ import pl.mikolajp.core.validation.SidesValidator;
 import pl.mikolajp.core.validation.Validator;
 
 @RestController
+@RequestMapping("/dice")
 public class Controller {
-    @GetMapping("/d20")
-    public Integer rollD20(){
-        Integer sides = 20;
-        Dice dice = DiceImp.Builder.create().withSides(sides).build();
-        Validator validator = new SidesValidator();
+    @GetMapping("/{diceType}")
+    public ResponseEntity<?> rollDice(@PathVariable String diceType){
         try{
-            validator.validate(dice);
-            return dice.roll();
-           
+            if(diceType.charAt(0) != 'd')
+                throw new ImproperDiceNameException(diceType);
+
+            Integer sides = Integer.parseInt(diceType.substring(1));
+
+            Dice dice = DiceImp.Builder.create().withSides(sides).build();
+            Validator diceValidator = new SidesValidator();
+            
+            diceValidator.validate(dice);
+            return ResponseEntity.ok(dice.roll());
+        }catch(ImproperDiceNameException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
         }catch(ValidationException e){
-            System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
