@@ -35,4 +35,12 @@ public class Controller {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/d20/{weightedSide}")
+    public Integer rollWeightedD20(@PathVariable Integer weightedSide){
+        Dice dice = DiceImp.Builder.create().withSides(20).build();
+        dice.setWeight(weightedSide);
+
+        return dice.roll();
+    }
 }
