@@ -27,6 +27,7 @@ public class DiceImp implements Dice {
         List<Double> probabilites = new ArrayList<>(Collections.nCopies(20, 1.0));
         List<Integer> neigboringValues = neighbors.get(weightedSide - 1);
         
+        //here set the probability of weighted side and 3 adjacent sides
         probabilites.set(weightedSide - 1, 4.0);
         probabilites.set(neigboringValues.get(0), 2.0);
         probabilites.set(neigboringValues.get(1), 2.0);
