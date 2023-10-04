@@ -26,6 +26,7 @@ public class DiceImp implements Dice {
         Double randomNumber = rand.nextDouble();
         List<Double> probabilites = new ArrayList<>(Collections.nCopies(20, 1.0));
         List<Integer> neigboringValues = neighbors.get(weightedSide - 1);
+        
         probabilites.set(weightedSide - 1, 4.0);
         probabilites.set(neigboringValues.get(0), 2.0);
         probabilites.set(neigboringValues.get(1), 2.0);
@@ -36,7 +37,7 @@ public class DiceImp implements Dice {
             totalProbability += p;
         }
         for (int i = 0; i < 20; i++) {
-            probabilites.add(i, probabilites.get(i) / totalProbability);
+            probabilites.set(i, probabilites.get(i) / totalProbability);
         }
 
         Double cumulativeProbability = 0.0;
